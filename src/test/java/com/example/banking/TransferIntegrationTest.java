@@ -71,4 +71,19 @@ class TransferIntegrationTest {
         assertThat(acc1.getBalance()).isEqualByComparingTo("800.00");
         assertThat(acc2.getBalance()).isEqualByComparingTo("700.00");
     }
+
+    @Test
+    @org.junit.jupiter.api.DisplayName("Should fail transfer on insufficient funds and log failed transaction")
+    void shouldFailTransferOnInsufficientFunds() {
+        org.junit.jupiter.api.Assertions.assertThrows(
+                com.example.banking.exception.InsufficientFundsException.class,
+                () -> transferService.transferMoney("RO01", "RO02", new BigDecimal("1500.00"))
+        );
+
+        Account acc1 = accountRepository.findByAccountNumber("RO01").orElseThrow();
+        Account acc2 = accountRepository.findByAccountNumber("RO02").orElseThrow();
+        assertThat(acc1.getBalance()).isEqualByComparingTo("1000.00");
+        assertThat(acc2.getBalance()).isEqualByComparingTo("500.00");
+
+    }
 }
