@@ -1,6 +1,6 @@
 package com.example.banking.controller;
 
-import com.example.banking.dto.transferDto.TransferRequestDto;
+import com.example.banking.dto.TransferRequestDto;
 import com.example.banking.service.TransferService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
