@@ -1,5 +1,7 @@
 package com.example.banking.service;
 
+import com.example.banking.exception.AccountNotFoundException;
+import com.example.banking.exception.InsufficientFundsException;
 import com.example.banking.model.Account;
 import com.example.banking.model.User;
 import com.example.banking.repository.AccountRepository;
@@ -28,5 +30,33 @@ public class AccountService {
         account.setVersion(0L);
 
         return accountRepository.save(account);
+    }
+
+    public void deposit(String username, String accountNumber, BigDecimal amount) {
+        Account account = accountRepository.findByAccountNumber(accountNumber)
+                .orElseThrow(() -> new AccountNotFoundException("Account not found"));
+
+        if (!account.getUser().getUsername().equals(username)) {
+            throw new RuntimeException("Unauthorized access to this account");
+        }
+
+        account.setBalance(account.getBalance().add(amount));
+        accountRepository.save(account);
+    }
+
+    public void withdraw(String username, String accountNumber, BigDecimal amount) {
+        Account account = accountRepository.findByAccountNumber(accountNumber)
+                .orElseThrow(() -> new AccountNotFoundException("Account not found"));
+
+        if (!account.getUser().getUsername().equals(username)) {
+            throw new RuntimeException("Unauthorized access to this account");
+        }
+
+        if (account.getBalance().compareTo(amount) < 0) {
+            throw new InsufficientFundsException("Insufficient funds in account");
+        }
+
+        account.setBalance(account.getBalance().subtract(amount));
+        accountRepository.save(account);
     }
 }
