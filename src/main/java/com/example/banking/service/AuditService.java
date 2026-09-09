@@ -17,9 +17,9 @@ public class AuditService {
     private final TransactionRepository transactionRepository;
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void logTransaction(String fromAccountNumber, String toAccountNumber, BigDecimal amount) {
+    public void logTransaction(String fromAccountNumber, String toAccountNumber, BigDecimal amount, Status status) {
         Transaction transaction = new Transaction(fromAccountNumber, toAccountNumber,
-                amount, Status.SUCCESS);
+                amount, status);
         transactionRepository.save(transaction);
     }
 }
