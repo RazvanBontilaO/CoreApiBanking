@@ -3,6 +3,7 @@ package com.example.banking.controller;
 import com.example.banking.dto.transferDto.TransferRequestDto;
 import com.example.banking.service.TransferService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -16,6 +17,11 @@ public class TransferController {
 
     public TransferController(TransferService transferService) {
         this.transferService = transferService;
+    }
+
+    @GetMapping("/")
+    public String test() {
+        return "This is only for testing an API";
     }
 
     @PostMapping("/api/v1/transfers")
