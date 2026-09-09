@@ -1,6 +1,7 @@
 package com.example.banking.controller;
 
 import com.example.banking.dto.AccountCreateRequest;
+import com.example.banking.dto.TransactionRequest;
 import com.example.banking.model.Account;
 import com.example.banking.service.AccountService;
 import lombok.RequiredArgsConstructor;
@@ -24,5 +25,21 @@ public class AccountController {
 
         Account createdAccount = accountService.createAccountForUser(currentUsername, request.getInitialBalance());
         return ResponseEntity.ok(createdAccount);
+    }
+
+    @PostMapping("/deposit")
+    public ResponseEntity<String> deposit(
+            Authentication authentication,
+            @RequestBody TransactionRequest request) {
+        accountService.deposit(authentication.getName(), request.getAccountNumber(), request.getAmount());
+        return ResponseEntity.ok("Deposit successful");
+    }
+
+    @PostMapping("/withdraw")
+    public ResponseEntity<String> withdraw(
+            Authentication authentication,
+            @RequestBody TransactionRequest request) {
+        accountService.withdraw(authentication.getName(), request.getAccountNumber(), request.getAmount());
+        return ResponseEntity.ok("Withdrawal successful");
     }
 }
