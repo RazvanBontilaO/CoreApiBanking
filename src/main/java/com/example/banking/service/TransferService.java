@@ -19,7 +19,7 @@ public class TransferService {
 
 
     private final AccountRepository accountRepository;
-    private final TransactionRepository transactionRepository;
+    private final AuditService auditService;
 
     @Transactional
     public void transferMoney(String fromAccountNumber, String toAccountNumber, BigDecimal amount) {
@@ -29,12 +29,12 @@ public class TransferService {
                 .orElseThrow(() -> new AccountNotFoundException("Destination account not found"));
 
         if (fromAccount.getBalance().compareTo(amount) < 0) {
-            transactionRepository.save(new Transaction(fromAccountNumber, toAccountNumber, amount, Status.FAILED));
+           auditService.logTransaction(fromAccountNumber, toAccountNumber, amount, Status.FAILED);
             throw new InsufficientFundsException("Insufficient fonds in account");
         }
 
         fromAccount.setBalance(fromAccount.getBalance().subtract(amount));
         toAccount.setBalance(toAccount.getBalance().add(amount));
-        transactionRepository.save(new Transaction(fromAccountNumber, toAccountNumber, amount, Status.SUCCESS));
+        auditService.logTransaction(fromAccountNumber, toAccountNumber, amount, Status.SUCCESS);
     }
 }
